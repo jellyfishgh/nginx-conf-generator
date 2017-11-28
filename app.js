@@ -7,12 +7,12 @@ const template = `location /space_holder/index.html {
   index index.html;
   break;
 }
-location ^~ /space_holder/static {
+location ^~ /space_holder/static/ {
   root  /work/html;
   index index.html;
   break;
 }
-location ^~ /space_holder {
+location ^~ /space_holder/ {
   root  /work/html;
   rewrite ^ /space_holder/index.html  break;
 }`
