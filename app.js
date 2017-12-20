@@ -2,13 +2,13 @@ const fs = require('fs')
 
 const root = process.argv[2]
 const project = process.argv[3]
-
-const template = `location /space_holder/(index.html|favicon.ico|manifest.json|service-worker.js|asset-manifest.json) {
+const fileTemplate = `location /space_holder/file_holder {
   root  root_holder;
   index index.html;
   break;
 }
-location ^~ /space_holder/static/ {
+`
+const template = `location ^~ /space_holder/static/ {
   root  root_holder;
   index index.html;
   break;
@@ -21,7 +21,19 @@ location ^~ /space_holder/ {
 
 if (root && project) {
   console.log(`准备给 ${project} 生成 SPA Nginx conf`)
-  const conf = template.replace(/space_holder/g, project).replace(/root_holder/g, root)
+  const files = 'index.html|favicon.ico|manifest.json|service-worker.js|asset-manifest.json'.split(
+    '|'
+  )
+  const conf =
+    files
+      .map(file =>
+        fileTemplate
+          .replace(/space_holder/g, project)
+          .replace(/root_holder/g, root)
+          .replace(/file_holder/g, file)
+      )
+      .join('') +
+    template.replace(/space_holder/g, project).replace(/root_holder/g, root)
   fs.writeFile(`${project}.conf`, conf, err => {
     if (err) throw err
     console.log(`${project}.conf 创建完成`)
