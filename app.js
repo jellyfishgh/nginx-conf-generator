@@ -2,13 +2,19 @@ const fs = require('fs')
 
 const root = process.argv[2]
 const project = process.argv[3]
+
 const fileTemplate = `location /space_holder/file_holder {
   root  root_holder;
   index index.html;
   break;
 }
 `
-const template = `location ^~ /space_holder/static/ {
+const template = `location /space_holder {
+  root  root_holder;
+  index index.html;
+  break;
+}
+location ^~ /space_holder/static/ {
   root  root_holder;
   index index.html;
   break;
