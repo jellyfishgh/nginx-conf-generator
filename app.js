@@ -2,6 +2,7 @@ const fs = require('fs')
 
 const root = process.argv[2]
 const project = process.argv[3]
+const out = process.argv[4]
 
 const fileTemplate = `location /space_holder/file_holder {
   root  root_holder;
@@ -30,16 +31,20 @@ if (root && project) {
   const files = 'index.html|favicon.ico|manifest.json|service-worker.js|asset-manifest.json'.split(
     '|'
   )
-  const conf =
-    files
-      .map(file =>
-        fileTemplate
-          .replace(/space_holder/g, project)
-          .replace(/root_holder/g, root)
-          .replace(/file_holder/g, file)
-      )
-      .join('') +
-    template.replace(/space_holder/g, project).replace(/root_holder/g, root)
+  const outFiles = files
+    .map(file =>
+      fileTemplate
+        .replace(/space_holder/g, project)
+        .replace(/root_holder/g, root)
+        .replace(/file_holder/g, file)
+    )
+    .join('')
+  let conf = template
+    .replace(/space_holder/g, project)
+    .replace(/root_holder/g, root)
+  if (out) {
+    conf = `${outFiles}${conf}`
+  }
   fs.writeFile(`${project}.conf`, conf, err => {
     if (err) throw err
     console.log(`${project}.conf 创建完成`)
